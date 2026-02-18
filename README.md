@@ -2,11 +2,11 @@
 
 <!-- Build Badge -->
 
-[![Build](https://github.com/pactflow/example-consumer-wiremock/workflows/Build/badge.svg)](https://github.com/pactflow/example-consumer-wiremock/actions/workflows/build.yml)
+[![Build](https://github.com/luciancrasovan/example-bi-directional-consumer-wiremock/workflows/Build/badge.svg)](https://github.com/luciancrasovan/example-bi-directional-consumer-wiremock/actions/workflows/build.yml)
 
 <!-- Can I Deploy Badge -->
 
-[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-wiremock/branches/master/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/pactflow-example-bi-directional-consumer-wiremock/branches/master/latest-version/can-i-deploy/to-environment/production/badge)
+[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/example-bi-directional-consumer-wiremock/branches/master/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/example-bi-directional-consumer-wiremock/branches/master/latest-version/can-i-deploy/to-environment/production/badge)
 
 - [Example Java Consumer - Wiremock (BYO Adapter)](#example-java-consumer---wiremock-byo-adapter)
   - [Overview of Example](#overview-of-example)
@@ -67,7 +67,7 @@ When you run the CI pipeline (see below for doing this), the pipeline should per
 
 This project is currently compatible with the following provider(s):
 
-* [pactflow-example-bi-directional-provider-dredd](https://github.com/pactflow/example-bi-directional-provider-dredd)
+* [example-bi-directional-provider-dredd](https://github.com/luciancrasovan/example-bi-directional-provider-dredd)
 * [pactflow-example-bi-directional-provider-restassured](https://github.com/pactflow/example-provider-restassured)
 * [pactflow-example-bi-directional-provider-postman](https://github.com/pactflow/example-bi-directional-provider-postman)
 
@@ -91,7 +91,7 @@ To be able to run some of the commands locally, you will need to export the foll
 
 Set `PACT_PROVIDER` to one of the following
 
-- `PACT_PROVIDER=pactflow-example-bi-directional-provider-dredd`: Dredd - (https://github.com/pactflow/example-bi-directional-provider-dredd)
+- `PACT_PROVIDER=example-bi-directional-provider-dredd`: Dredd - (https://github.com/luciancrasovan/example-bi-directional-provider-dredd)
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-postman`: Postman - (https://github.com/pactflow/example-bi-directional-provider-postman)
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-restassured`:  Rest Assured - (https://github.com/pactflow/example-bi-directional-provider-restassured)
 
