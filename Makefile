@@ -7,8 +7,10 @@ DEPLOY_ENVIRONMENT ?= "staging"
 GITHUB_WEBHOOK_UUID := "654aff47-0269-4b9f-aaca-2f83ff3cd772"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
 
-# Only deploy from master
+# Only deploy from approved branches
 ifeq ($(GIT_BRANCH),master)
+	DEPLOY_TARGET=deploy
+else ifeq ($(GIT_BRANCH),hype-stan-v3-consumer)
 	DEPLOY_TARGET=deploy
 else
 	DEPLOY_TARGET=no_deploy
