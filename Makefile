@@ -3,7 +3,7 @@
 PACTICIPANT := "hype-stan-v3-client"
 PACT_PROVIDER ?= "stan-api-v3"
 PACT_PROVIDER_DEPLOYED_BRANCH ?= "stan-v3"
-DEPLOY_ENVIRONMENT ?= "staging"
+DEPLOY_ENVIRONMENT ?= staging
 GITHUB_WEBHOOK_UUID := "654aff47-0269-4b9f-aaca-2f83ff3cd772"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
 
