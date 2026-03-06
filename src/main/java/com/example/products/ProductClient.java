@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +13,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ProductClient {
+  private static final String VERSIONED_MEDIA_TYPE = "application/json; x-api-version=3.0";
+  private static final String AUTHORIZATION_HEADER_VALUE = "Bearer synthetic-token";
   private final String url;
 
   public ProductClient(@Value("${basepath}") final String url) {
     this.url = url;
   }
 
-  public Product createProduct(final Product p) throws IOException {
-    return Request.Post(this.url + "/products")
-      .addHeader("Accept", "application/json")
-      .bodyString(this.toString(p), ContentType.APPLICATION_JSON)
+  public Product getKuttyById(final String id) throws IOException {
+    return Request.Get(this.url + "/v3/GI/Kutty/" + id)
+      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
+      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
       .execute().handleResponse(httpResponse -> {
         try {
           final ObjectMapper mapper = new ObjectMapper();
@@ -36,42 +37,51 @@ public class ProductClient {
       });
   }
 
-  public Product getProduct(final String id) throws IOException {
-    return Request.Get(this.url + "/product/" + id)
-      .addHeader("Accept", "application/json")
+  public List<Product> getKutty() throws IOException {
+    return Request.Get(this.url + "/v3/GI/Kutty")
+      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
+      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
       .execute().handleResponse(httpResponse -> {
         try {
           final ObjectMapper mapper = new ObjectMapper();
-          final Product product = mapper.readValue(httpResponse.getEntity().getContent(), Product.class);
+          final List<Product> kutty = mapper.readValue(httpResponse.getEntity().getContent(), new TypeReference<List<Product>>(){});
 
-          return product;
+          return kutty;
         } catch (final JsonMappingException e) {
           throw new IOException(e);
         }
       });
   }
 
-  public List<Product> getProducts() throws IOException {
-    return Request.Get(this.url + "/products")
-      .addHeader("Accept", "application/json")
+  public Witty getWittyById(final String id, final boolean includeDescription) throws IOException {
+    return Request.Get(this.url + "/v3/BI/Witty/" + id + "?includeDescription=" + includeDescription)
+      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
+      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
       .execute().handleResponse(httpResponse -> {
         try {
           final ObjectMapper mapper = new ObjectMapper();
-          final List<Product> products = mapper.readValue(httpResponse.getEntity().getContent(), new TypeReference<List<Product>>(){});
+          final Witty witty = mapper.readValue(httpResponse.getEntity().getContent(), Witty.class);
 
-          return products;
+          return witty;
         } catch (final JsonMappingException e) {
           throw new IOException(e);
         }
       });
-    }
+  }
 
-    private String toString(final Product p) throws IOException {
-      try {
-        final ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(p);
-      } catch (final JsonMappingException e) {
-        throw new IOException(e);
-      }
+  public List<Witty> getWitty(final boolean includeDescription) throws IOException {
+    return Request.Get(this.url + "/v3/BI/Witty?includeDescription=" + includeDescription)
+      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
+      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
+      .execute().handleResponse(httpResponse -> {
+        try {
+          final ObjectMapper mapper = new ObjectMapper();
+          final List<Witty> witty = mapper.readValue(httpResponse.getEntity().getContent(), new TypeReference<List<Witty>>(){});
+
+          return witty;
+        } catch (final JsonMappingException e) {
+          throw new IOException(e);
+        }
+      });
   }
 }

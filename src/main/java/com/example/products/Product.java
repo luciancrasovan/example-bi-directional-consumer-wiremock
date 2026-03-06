@@ -3,17 +3,15 @@ package com.example.products;
 class Product {
 	private String id;
 	private String name;
-	private String type;
-	private Double price;
+	private String code;
 
 	Product() {
 	}
 
-	Product(final String id, final String name, final String type, final Double price) {
+	Product(final String id, final String code, final String name) {
 		this.id = id;
+		this.code = code;
 		this.name = name;
-		this.type = type;
-		this.price = price;
 	}
 
 	public String getId() {
@@ -24,12 +22,8 @@ class Product {
 		return this.name;
 	}
 
-	public Double getPrice() {
-		return this.price;
-	}
-
-	public String getType() {
-		return this.type;
+	public String getCode() {
+		return this.code;
 	}
 
 }

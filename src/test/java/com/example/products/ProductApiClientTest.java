@@ -1,7 +1,6 @@
 package com.example.products;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -12,11 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.matching.ContainsPattern;
 import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
 
 @SpringBootTest
@@ -29,41 +26,49 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 	private ProductClient productClient;
 
 	@Test
-	void getProduct() throws IOException {
+	void getKuttyById() throws IOException {
 
 		// Arrange
-		this.wiremock.stubFor(WireMock.get(WireMock.urlEqualTo("/product/10"))
-				.willReturn(aResponse().withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-						.withBody("{ \"name\": \"pizza\", \"id\": \"10\", \"type\": \"food\" }")));
+		this.wiremock.stubFor(WireMock.get(WireMock.urlEqualTo("/v3/GI/Kutty/K-101"))
+				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
+				.withHeader("Authorization", WireMock.matching("Bearer .+"))
+				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
+						.withBody("{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\" }")));
 
 		// Act
-		final Product product = this.productClient.getProduct("10");
+		final Product product = this.productClient.getKuttyById("K-101");
 
 		// Assert
-		assertThat(product.getId(), is("10"));
+		assertThat(product.getId(), is("K-101"));
+		assertThat(product.getCode(), is("KCODE-K-101"));
 	}
 
 	@Test
-	void createProduct() throws IOException {
+	void getKutty() throws IOException {
 
-		final String productJson = "{ \"id\": \"27\", \"name\": \"pizza\", \"type\": \"food\" }";
-		this.wiremock.stubFor(
-				WireMock.post(WireMock.urlEqualTo("/products")).withRequestBody(equalToJson(productJson, true, true))
-						.withHeader("Content-Type", new ContainsPattern("application/json")).willReturn(aResponse()
-								.withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE).withBody(productJson)));
+		this.wiremock.stubFor(WireMock.get(WireMock.urlEqualTo("/v3/GI/Kutty"))
+				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
+				.withHeader("Authorization", WireMock.matching("Bearer .+"))
+				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
+						.withBody("[{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\" }]")));
 
-		final Product product = this.productClient.createProduct(new Product("27", "pizza", "food", 27.0));
-		assertThat(product.getId(), is("27"));
+		final List<Product> products = this.productClient.getKutty();
+		assertThat(products.get(0).getId(), is("K-101"));
 	}
 
 	@Test
-	void getProducts() throws IOException {
+	void getWittyById() throws IOException {
 
-		this.wiremock.stubFor(WireMock.get(WireMock.urlEqualTo("/products"))
-				.willReturn(aResponse().withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-						.withBody("[{ \"name\": \"pizza\", \"id\": \"10\", \"type\": \"food\", \"price\":  100 }]")));
+		this.wiremock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v3/BI/Witty/W-201"))
+				.withQueryParam("includeDescription", WireMock.equalTo("true"))
+				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
+				.withHeader("Authorization", WireMock.matching("Bearer .+"))
+				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
+						.withBody("{ \"id\": \"W-201\", \"description\": \"Synthetic Witty W-201\", \"items\": [{\"scope\": {\"ref\": \"SCOPE-1-1\"}, \"metric\": 1.5, \"refId\": \"REF-1-1\"}] }")));
 
-		final List<Product> products = this.productClient.getProducts();
-		assertThat(products.get(0).getId(), is("10"));
+		final Witty witty = this.productClient.getWittyById("W-201", true);
+		assertThat(witty.getId(), is("W-201"));
+		assertThat(witty.getDescription(), is("Synthetic Witty W-201"));
+		assertThat(witty.getItems().get(0).getScope().getRef(), is("SCOPE-1-1"));
 	}
 }

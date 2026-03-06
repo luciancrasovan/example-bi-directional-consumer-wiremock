@@ -1,6 +1,8 @@
 # Default to the read only token - the read/write token will be present on Travis CI.
 # It's set as a secure environment variable in the .travis.yml file
 PACTICIPANT := "example-bi-directional-consumer-wiremock"
+PACT_PROVIDER ?= "stan-api-v3"
+PACT_PROVIDER_DEPLOYED_BRANCH ?= "stan-v3"
 GITHUB_WEBHOOK_UUID := "654aff47-0269-4b9f-aaca-2f83ff3cd772"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
 
@@ -49,6 +51,7 @@ no_deploy:
 	@echo "Not deploying as not on master branch"
 
 can_i_deploy: .env
+	@echo "Checking deployment safety for provider ${PACT_PROVIDER} on branch ${PACT_PROVIDER_DEPLOYED_BRANCH}"
 	@"${PACT_CLI}" broker can-i-deploy \
 	  --pacticipant ${PACTICIPANT} \
 	  --version ${GIT_COMMIT} \

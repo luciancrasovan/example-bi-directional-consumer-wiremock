@@ -25,7 +25,7 @@ public class WireMockPactBaseTest implements WireMockConfigurationCustomizer {
       new WireMockPactExtension(
           WireMockPactConfig.builder() //
               .setConsumerDefaultValue("example-bi-directional-consumer-wiremock") //
-              .setProviderDefaultValue(System.getenv().getOrDefault("PACT_PROVIDER", "pactflow-example-bi-directional-provider-restassured")) //
+          .setProviderDefaultValue(System.getenv().getOrDefault("PACT_PROVIDER", "stan-api-v3")) //
               .setPactJsonFolder("build/pacts"));
 
   @Override

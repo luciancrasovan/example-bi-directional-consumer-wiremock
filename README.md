@@ -91,11 +91,11 @@ To be able to run some of the commands locally, you will need to export the foll
 
 Set `PACT_PROVIDER` to one of the following
 
-- `PACT_PROVIDER=example-bi-directional-provider-dredd`: Dredd - (https://github.com/luciancrasovan/example-bi-directional-provider-dredd)
+- `PACT_PROVIDER=stan-api-v3`: Dredd provider pacticipant on the `stan-v3` branch - (https://github.com/luciancrasovan/example-bi-directional-provider-dredd/tree/stan-v3)
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-postman`: Postman - (https://github.com/pactflow/example-bi-directional-provider-postman)
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-restassured`:  Rest Assured - (https://github.com/pactflow/example-bi-directional-provider-restassured)
 
-NOTE:- It defaults to `pactflow-example-bi-directional-provider-restassured` for compatibility with the [Java RestAssured](https://github.com/pactflow/example-bi-directional-provider-restassured) provider
+NOTE:- It defaults to `stan-api-v3` for compatibility with the provider deployed from branch `stan-v3`.
   
 ## Usage
 
