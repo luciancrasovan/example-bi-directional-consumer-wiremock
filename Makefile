@@ -1,6 +1,6 @@
 # Default to the read only token - the read/write token will be present on Travis CI.
 # It's set as a secure environment variable in the .travis.yml file
-PACTICIPANT := "hype-stan-v3-client"
+PACTICIPANT := "hype-stan-v3.1-client"
 PACT_PROVIDER ?= "stan-api-v3"
 PACT_PROVIDER_DEPLOYED_BRANCH ?= "stan-v3"
 DEPLOY_ENVIRONMENT ?= staging
@@ -11,6 +11,8 @@ PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKE
 ifeq ($(GIT_BRANCH),master)
 	DEPLOY_TARGET=deploy
 else ifeq ($(GIT_BRANCH),hype-stan-v3-consumer)
+	DEPLOY_TARGET=deploy
+else ifeq ($(GIT_BRANCH),hype-stan-v3.1-consumer)
 	DEPLOY_TARGET=deploy
 else
 	DEPLOY_TARGET=no_deploy

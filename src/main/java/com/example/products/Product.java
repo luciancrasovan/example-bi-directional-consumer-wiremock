@@ -4,14 +4,16 @@ class Product {
 	private String id;
 	private String name;
 	private String code;
+	private String category;
 
 	Product() {
 	}
 
-	Product(final String id, final String code, final String name) {
+	Product(final String id, final String code, final String name, final String category) {
 		this.id = id;
 		this.code = code;
 		this.name = name;
+		this.category = category;
 	}
 
 	public String getId() {
@@ -24,6 +26,10 @@ class Product {
 
 	public String getCode() {
 		return this.code;
+	}
+
+	public String getCategory() {
+		return this.category;
 	}
 
 }

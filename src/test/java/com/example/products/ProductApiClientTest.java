@@ -33,7 +33,7 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
 				.withHeader("Authorization", WireMock.matching("Bearer .+"))
 				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
-						.withBody("{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\" }")));
+						.withBody("{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\", \"category\": \"standard\" }")));
 
 		// Act
 		final Product product = this.productClient.getKuttyById("K-101");
@@ -41,6 +41,7 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 		// Assert
 		assertThat(product.getId(), is("K-101"));
 		assertThat(product.getCode(), is("KCODE-K-101"));
+		assertThat(product.getCategory(), is("standard"));
 	}
 
 	@Test
@@ -50,10 +51,11 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
 				.withHeader("Authorization", WireMock.matching("Bearer .+"))
 				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
-						.withBody("[{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\" }]")));
+						.withBody("[{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\", \"category\": \"standard\" }]")));
 
 		final List<Product> products = this.productClient.getKutty();
 		assertThat(products.get(0).getId(), is("K-101"));
+		assertThat(products.get(0).getCategory(), is("standard"));
 	}
 
 	@Test
