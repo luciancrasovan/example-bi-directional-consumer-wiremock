@@ -54,11 +54,11 @@ no_deploy:
 	@echo "Not deploying as not on master branch"
 
 can_i_deploy: .env
-	@echo "Checking deployment safety for provider ${PACT_PROVIDER} on branch ${PACT_PROVIDER_DEPLOYED_BRANCH}"
+	@echo "Checking deployment safety against ${PACT_PROVIDER}/${PACT_PROVIDER_DEPLOYED_BRANCH}"
 	@"${PACT_CLI}" broker can-i-deploy \
 	  --pacticipant ${PACTICIPANT} \
 	  --version ${GIT_COMMIT} \
-	  --to-environment ${DEPLOY_ENVIRONMENT} \
+	  --to ${PACT_PROVIDER}/${PACT_PROVIDER_DEPLOYED_BRANCH} \
 	  --retry-while-unknown 6 \
 	  --retry-interval 10
 
