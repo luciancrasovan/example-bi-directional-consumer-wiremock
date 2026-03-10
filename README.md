@@ -169,3 +169,5 @@ You can still try this example locally on Windows using powershell and running c
 ## Found an issue?
 
 Reach out via a GitHub Issue, or reach us over in the [Pact foundation Slack](https://slack.pact.io)
+
+<!-- CI trigger: no functional changes -->
