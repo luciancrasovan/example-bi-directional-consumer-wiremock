@@ -69,14 +69,14 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 	void postNottyReturnsUnauthorizedWithoutFestivalPass() throws IOException {
 
 		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
-				.withQueryParam("force", WireMock.equalTo("false"))
+				.withQueryParam("force", WireMock.equalTo("true"))
 				.withHeader("Accept", WireMock.containing("application/json"))
 				.withHeader("Content-Type", WireMock.containing("application/json"))
 				.withHeader("X-WOODSTOCK-PASS", WireMock.absent())
 				.willReturn(aResponse().withStatus(401).withHeader("Content-Type", "application/json")
 						.withBody("{ \"statusCode\": \"Unauthorized\", \"description\": \"Missing festival pass.\", \"exception\": \"AuthorizationException\" }")));
 
-		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, false, false);
+		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, true, false);
 		assertThat(result.get("statusCode").asText(), is("Unauthorized"));
 		assertThat(result.get("exception").asText(), is("AuthorizationException"));
 	}
