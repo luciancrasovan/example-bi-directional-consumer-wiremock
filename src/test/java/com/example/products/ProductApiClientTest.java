@@ -80,4 +80,55 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 		assertThat(result.get("statusCode").asText(), is("Unauthorized"));
 		assertThat(result.get("exception").asText(), is("AuthorizationException"));
 	}
+
+	@Test
+	void postNottyReturnsBadRequest() throws IOException {
+
+		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
+				.withQueryParam("force", WireMock.equalTo("false"))
+				.withHeader("Accept", WireMock.containing("application/json"))
+				.withHeader("Content-Type", WireMock.containing("application/json"))
+				.withHeader("X-WOODSTOCK-PASS", WireMock.equalTo("festival-pass"))
+				.withHeader("x-force-status", WireMock.equalTo("400"))
+				.willReturn(aResponse().withStatus(400).withHeader("Content-Type", "application/json")
+						.withBody("{ \"status\": \"Rejected\", \"decision\": \"P4\", \"validationResults\": [{\"topic\": \"Pitty.Payload\", \"errors\": [{\"errorCode\": \"E-400\", \"message\": \"E-400 validation failed\"}], \"warnings\": []}] }")));
+
+		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, false, true, 400);
+		assertThat(result.get("status").asText(), is("Rejected"));
+		assertThat(result.get("decision").asText(), is("P4"));
+	}
+
+	@Test
+	void postNottyReturnsUnprocessableContent() throws IOException {
+
+		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
+				.withQueryParam("force", WireMock.equalTo("true"))
+				.withHeader("Accept", WireMock.containing("application/json"))
+				.withHeader("Content-Type", WireMock.containing("application/json"))
+				.withHeader("X-WOODSTOCK-PASS", WireMock.equalTo("festival-pass"))
+				.withHeader("x-force-status", WireMock.equalTo("422"))
+				.willReturn(aResponse().withStatus(422).withHeader("Content-Type", "application/json")
+						.withBody("{ \"status\": \"Rejected\", \"decision\": \"P3\", \"validationResults\": [{\"topic\": \"Pitty.BusinessRule\", \"errors\": [{\"errorCode\": \"E-422\", \"message\": \"E-422 validation failed\"}], \"warnings\": [{\"warningCode\": \"W-422\", \"message\": \"W-422 warning detected\"}]}] }")));
+
+		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, true, true, 422);
+		assertThat(result.get("status").asText(), is("Rejected"));
+		assertThat(result.get("decision").asText(), is("P3"));
+	}
+
+	@Test
+	void postNottyReturnsInternalServerError() throws IOException {
+
+		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
+				.withQueryParam("force", WireMock.equalTo("false"))
+				.withHeader("Accept", WireMock.containing("application/json"))
+				.withHeader("Content-Type", WireMock.containing("application/json"))
+				.withHeader("X-WOODSTOCK-PASS", WireMock.equalTo("festival-pass"))
+				.withHeader("x-force-status", WireMock.equalTo("500"))
+				.willReturn(aResponse().withStatus(500).withHeader("Content-Type", "application/json")
+						.withBody("{ \"statusCode\": \"InternalServerError\", \"description\": \"Unexpected processing failure.\", \"exception\": \"RuntimeException\" }")));
+
+		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, false, true, 500);
+		assertThat(result.get("statusCode").asText(), is("InternalServerError"));
+		assertThat(result.get("exception").asText(), is("RuntimeException"));
+	}
 }
