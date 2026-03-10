@@ -5,13 +5,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
@@ -25,52 +25,59 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 	@Autowired
 	private ProductClient productClient;
 
+	private static final String PITY_REQUEST = """
+			{
+			  "c": {
+			    "sourceSystem": "archie-app",
+			    "a": [
+			      {
+			        "m": "payload",
+			        "p": [
+			          {
+			            "id": 101,
+			            "productNr": "P-101",
+			            "modelNr": "M-101",
+			            "pxid": "PX-101",
+			            "t": []
+			          }
+			        ]
+			      }
+			    ]
+			  }
+			}
+			""";
+
 	@Test
-	void getKuttyById() throws IOException {
+	void postNottyReturnsOkDecision() throws IOException {
 
-		// Arrange
-		this.wiremock.stubFor(WireMock.get(WireMock.urlEqualTo("/v3/GI/Kutty/K-101"))
-				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
-				.withHeader("Authorization", WireMock.matching("Bearer .+"))
-				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
-						.withBody("{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\", \"category\": \"standard\" }")));
+		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
+				.withQueryParam("force", WireMock.equalTo("false"))
+				.withHeader("Accept", WireMock.containing("application/json"))
+				.withHeader("Content-Type", WireMock.containing("application/json"))
+				.withHeader("X-WOODSTOCK-PASS", WireMock.equalTo("festival-pass"))
+				.willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+						.withBody("{ \"status\": \"Accepted\", \"decision\": \"P1\", \"validationResults\": [{\"topic\": \"Pitty.Payload\", \"errors\": [], \"warnings\": [{\"warningCode\": \"W-001\", \"message\": \"W-001 warning detected\"}]}] }")));
 
-		// Act
-		final Product product = this.productClient.getKuttyById("K-101");
+		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, false);
 
-		// Assert
-		assertThat(product.getId(), is("K-101"));
-		assertThat(product.getCode(), is("KCODE-K-101"));
-		assertThat(product.getCategory(), is("standard"));
+		assertThat(result.get("status").asText(), is("Accepted"));
+		assertThat(result.get("decision").asText(), is("P1"));
+		assertThat(result.get("validationResults").get(0).get("topic").asText(), is("Pitty.Payload"));
 	}
 
 	@Test
-	void getKutty() throws IOException {
+	void postNottyReturnsUnauthorizedWithoutFestivalPass() throws IOException {
 
-		this.wiremock.stubFor(WireMock.get(WireMock.urlEqualTo("/v3/GI/Kutty"))
-				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
-				.withHeader("Authorization", WireMock.matching("Bearer .+"))
-				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
-						.withBody("[{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\", \"category\": \"standard\" }]")));
+		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
+				.withQueryParam("force", WireMock.equalTo("false"))
+				.withHeader("Accept", WireMock.containing("application/json"))
+				.withHeader("Content-Type", WireMock.containing("application/json"))
+				.withHeader("X-WOODSTOCK-PASS", WireMock.absent())
+				.willReturn(aResponse().withStatus(401).withHeader("Content-Type", "application/json")
+						.withBody("{ \"statusCode\": \"Unauthorized\", \"description\": \"Missing festival pass.\", \"exception\": \"AuthorizationException\" }")));
 
-		final List<Product> products = this.productClient.getKutty();
-		assertThat(products.get(0).getId(), is("K-101"));
-		assertThat(products.get(0).getCategory(), is("standard"));
-	}
-
-	@Test
-	void getWittyById() throws IOException {
-
-		this.wiremock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v3/BI/Witty/W-201"))
-				.withQueryParam("includeDescription", WireMock.equalTo("true"))
-				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
-				.withHeader("Authorization", WireMock.matching("Bearer .+"))
-				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
-						.withBody("{ \"id\": \"W-201\", \"description\": \"Synthetic Witty W-201\", \"items\": [{\"scope\": {\"ref\": \"SCOPE-1-1\"}, \"metric\": 1.5, \"refId\": \"REF-1-1\"}] }")));
-
-		final Witty witty = this.productClient.getWittyById("W-201", true);
-		assertThat(witty.getId(), is("W-201"));
-		assertThat(witty.getDescription(), is("Synthetic Witty W-201"));
-		assertThat(witty.getItems().get(0).getScope().getRef(), is("SCOPE-1-1"));
+		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, false, false);
+		assertThat(result.get("statusCode").asText(), is("Unauthorized"));
+		assertThat(result.get("exception").asText(), is("AuthorizationException"));
 	}
 }

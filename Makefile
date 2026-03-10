@@ -1,8 +1,8 @@
 # Default to the read only token - the read/write token will be present on Travis CI.
 # It's set as a secure environment variable in the .travis.yml file
-PACTICIPANT := "hype-stan-v3.1-client"
-PACT_PROVIDER ?= "stan-api-v3"
-PACT_PROVIDER_DEPLOYED_BRANCH ?= "stan-v3"
+PACTICIPANT := "hippie-archie-client"
+PACT_PROVIDER ?= "hippie-api-v1"
+PACT_PROVIDER_DEPLOYED_BRANCH ?= "hype-api-v1"
 DEPLOY_ENVIRONMENT ?= staging
 GITHUB_WEBHOOK_UUID := "654aff47-0269-4b9f-aaca-2f83ff3cd772"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
@@ -10,9 +10,7 @@ PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKE
 # Only deploy from approved branches
 ifeq ($(GIT_BRANCH),master)
 	DEPLOY_TARGET=deploy
-else ifeq ($(GIT_BRANCH),hype-stan-v3-consumer)
-	DEPLOY_TARGET=deploy
-else ifeq ($(GIT_BRANCH),hype-stan-v3.1-consumer)
+else ifeq ($(GIT_BRANCH),archie-hype-v1-consumer)
 	DEPLOY_TARGET=deploy
 else
 	DEPLOY_TARGET=no_deploy

@@ -1,84 +1,49 @@
 package com.example.products;
 
 import java.io.IOException;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 
+import org.apache.http.entity.ContentType;
 import org.apache.http.client.fluent.Request;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ProductClient {
-  private static final String VERSIONED_MEDIA_TYPE = "application/json; x-api-version=3.0";
-  private static final String AUTHORIZATION_HEADER_VALUE = "Bearer synthetic-token";
+  private static final String MEDIA_TYPE = "application/json";
+  private static final String FESTIVAL_PASS_HEADER = "X-WOODSTOCK-PASS";
+  private static final String FESTIVAL_PASS_VALUE = "festival-pass";
   private final String url;
 
   public ProductClient(@Value("${basepath}") final String url) {
     this.url = url;
   }
 
-  public Product getKuttyById(final String id) throws IOException {
-    return Request.Get(this.url + "/v3/GI/Kutty/" + id)
-      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
-      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
-      .execute().handleResponse(httpResponse -> {
-        try {
-          final ObjectMapper mapper = new ObjectMapper();
-          final Product product = mapper.readValue(httpResponse.getEntity().getContent(), Product.class);
-
-          return product;
-        } catch (final JsonMappingException e) {
-          throw new IOException(e);
-        }
-      });
+  public JsonNode postNotty(final String pittyBody, final boolean force) throws IOException {
+    return this.postNotty(pittyBody, force, true);
   }
 
-  public List<Product> getKutty() throws IOException {
-    return Request.Get(this.url + "/v3/GI/Kutty")
-      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
-      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
+  public JsonNode postNotty(final String pittyBody, final boolean force, final boolean includeFestivalPass) throws IOException {
+    final Request request = Request.Post(this.url + "/pitty/notty?force=" + force)
+      .addHeader("Accept", MEDIA_TYPE)
+      .addHeader("Content-Type", MEDIA_TYPE)
+      .bodyByteArray(pittyBody.getBytes(StandardCharsets.UTF_8), ContentType.APPLICATION_JSON);
+
+    if (includeFestivalPass) {
+      request.addHeader(FESTIVAL_PASS_HEADER, FESTIVAL_PASS_VALUE);
+    }
+
+    return request
       .execute().handleResponse(httpResponse -> {
         try {
           final ObjectMapper mapper = new ObjectMapper();
-          final List<Product> kutty = mapper.readValue(httpResponse.getEntity().getContent(), new TypeReference<List<Product>>(){});
+          final JsonNode body = mapper.readTree(httpResponse.getEntity().getContent());
 
-          return kutty;
-        } catch (final JsonMappingException e) {
-          throw new IOException(e);
-        }
-      });
-  }
-
-  public Witty getWittyById(final String id, final boolean includeDescription) throws IOException {
-    return Request.Get(this.url + "/v3/BI/Witty/" + id + "?includeDescription=" + includeDescription)
-      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
-      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
-      .execute().handleResponse(httpResponse -> {
-        try {
-          final ObjectMapper mapper = new ObjectMapper();
-          final Witty witty = mapper.readValue(httpResponse.getEntity().getContent(), Witty.class);
-
-          return witty;
-        } catch (final JsonMappingException e) {
-          throw new IOException(e);
-        }
-      });
-  }
-
-  public List<Witty> getWitty(final boolean includeDescription) throws IOException {
-    return Request.Get(this.url + "/v3/BI/Witty?includeDescription=" + includeDescription)
-      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
-      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
-      .execute().handleResponse(httpResponse -> {
-        try {
-          final ObjectMapper mapper = new ObjectMapper();
-          final List<Witty> witty = mapper.readValue(httpResponse.getEntity().getContent(), new TypeReference<List<Witty>>(){});
-
-          return witty;
+          return body;
         } catch (final JsonMappingException e) {
           throw new IOException(e);
         }
