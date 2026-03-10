@@ -171,3 +171,5 @@ You can still try this example locally on Windows using powershell and running c
 Reach out via a GitHub Issue, or reach us over in the [Pact foundation Slack](https://slack.pact.io)
 
 <!-- CI trigger: no functional changes -->
+
+<!-- CI trigger: rerun consumer pipeline -->
