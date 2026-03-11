@@ -1,9 +1,7 @@
 package com.example.products;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
-import org.apache.http.entity.ContentType;
 import org.apache.http.client.fluent.Request;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,38 +12,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ProductClient {
-  private static final String MEDIA_TYPE = "application/json";
-  private static final String FORCE_STATUS_HEADER = "x-force-status";
+  private static final String MEDIA_TYPE = "application/json; x-api-version=1.0";
   private final String url;
 
   public ProductClient(@Value("${basepath}") final String url) {
     this.url = url;
   }
 
-  public JsonNode postNotty(final String pittyBody, final boolean force) throws IOException {
-    return this.postNotty(pittyBody, force, null);
+  public JsonNode getKuttyById(final int id) throws IOException {
+    return this.executeGet("/v1/Kutty/Id/" + id);
   }
 
-  public JsonNode postNotty(final String pittyBody, final boolean force, final Integer forcedStatusCode) throws IOException {
-    final Request request = Request.Post(this.url + "/pitty/notty?force=" + force)
-      .addHeader("Accept", MEDIA_TYPE)
-      .addHeader("Content-Type", MEDIA_TYPE)
-      .bodyByteArray(pittyBody.getBytes(StandardCharsets.UTF_8), ContentType.APPLICATION_JSON);
+  public JsonNode getKuttyByShortName(final String shortName) throws IOException {
+    return this.executeGet("/v1/Kutty/ShortName/" + shortName);
+  }
 
-    if (forcedStatusCode != null) {
-      request.addHeader(FORCE_STATUS_HEADER, forcedStatusCode.toString());
-    }
+  private JsonNode executeGet(final String path) throws IOException {
+    return Request.Get(this.url + path)
+        .addHeader("Accept", MEDIA_TYPE)
+        .execute().handleResponse(httpResponse -> {
+          try {
+            final ObjectMapper mapper = new ObjectMapper();
+            final JsonNode body = mapper.readTree(httpResponse.getEntity().getContent());
 
-    return request
-      .execute().handleResponse(httpResponse -> {
-        try {
-          final ObjectMapper mapper = new ObjectMapper();
-          final JsonNode body = mapper.readTree(httpResponse.getEntity().getContent());
-
-          return body;
-        } catch (final JsonMappingException e) {
-          throw new IOException(e);
-        }
-      });
+            return body;
+          } catch (final JsonMappingException e) {
+            throw new IOException(e);
+          }
+        });
   }
 }

@@ -25,105 +25,35 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 	@Autowired
 	private ProductClient productClient;
 
-	private static final String PITY_REQUEST = """
-			{
-			  "cosmicPayload": {
-			    "sourceSystem": "archie-app",
-			    "auroraBatches": [
-			      {
-			        "moodSignature": "payload",
-			        "prismProducts": [
-			          {
-			            "nebulaId": 101,
-			            "artifactCode": "P-101",
-			            "constellationCode": "M-101",
-			            "phoenixId": "PX-101",
-			            "traitBundles": []
-			          }
-			        ]
-			      }
-			    ]
-			  }
-			}
-			""";
-
 	@Test
-	void postNottyReturnsOkDecision() throws IOException {
+	void getKuttyByIdReturnsKuttyObject() throws IOException {
 
-		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
-				.withQueryParam("force", WireMock.equalTo("false"))
+		this.wiremock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v1/Kutty/Id/101"))
 				.withHeader("Accept", WireMock.containing("application/json"))
-				.withHeader("Content-Type", WireMock.containing("application/json"))
-				.willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json")
-						.withBody("{ \"status\": \"Accepted\", \"decision\": \"P1\", \"validationResults\": [{\"topic\": \"Pitty.Payload\", \"errors\": [], \"warnings\": [{\"warningCode\": \"W-001\", \"message\": \"W-001 warning detected\"}]}] }")));
+				.willReturn(aResponse().withStatus(200)
+						.withHeader("Content-Type", "application/json; x-api-version=1.0")
+						.withBody("{ \"id\": 101, \"name\": \"Archie Item\", \"code\": \"ALPHA\", \"metaB\": \"core\" }")));
 
-		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, false);
+		final JsonNode result = this.productClient.getKuttyById(101);
 
-		assertThat(result.get("status").asText(), is("Accepted"));
-		assertThat(result.get("decision").asText(), is("P1"));
-		assertThat(result.get("validationResults").get(0).get("topic").asText(), is("Pitty.Payload"));
+		assertThat(result.get("id").asInt(), is(101));
+		assertThat(result.get("name").asText(), is("Archie Item"));
+		assertThat(result.get("code").asText(), is("ALPHA"));
+		assertThat(result.get("metaB").asText(), is("core"));
 	}
 
 	@Test
-	void postNottyReturnsUnauthorizedWithoutFestivalPass() throws IOException {
+	void getKuttyByShortNameReturnsKuttyObject() throws IOException {
 
-		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
-				.withQueryParam("force", WireMock.equalTo("true"))
+		this.wiremock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v1/Kutty/ShortName/ALPHA"))
 				.withHeader("Accept", WireMock.containing("application/json"))
-				.withHeader("Content-Type", WireMock.containing("application/json"))
-				.willReturn(aResponse().withStatus(401).withHeader("Content-Type", "application/json")
-						.withBody("{ \"statusCode\": \"Unauthorized\", \"description\": \"Missing festival pass.\", \"exception\": \"AuthorizationException\" }")));
+				.willReturn(aResponse().withStatus(200)
+						.withHeader("Content-Type", "application/json; x-api-version=1.0")
+						.withBody("{ \"id\": 101, \"name\": \"Archie Item\", \"code\": \"ALPHA\", \"metaB\": \"core\" }")));
 
-		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, true);
-		assertThat(result.get("statusCode").asText(), is("Unauthorized"));
-		assertThat(result.get("exception").asText(), is("AuthorizationException"));
-	}
+		final JsonNode result = this.productClient.getKuttyByShortName("ALPHA");
 
-	@Test
-	void postNottyReturnsBadRequest() throws IOException {
-
-		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
-				.withQueryParam("force", WireMock.equalTo("false"))
-				.withHeader("Accept", WireMock.containing("application/json"))
-				.withHeader("Content-Type", WireMock.containing("application/json"))
-				.withHeader("x-force-status", WireMock.equalTo("400"))
-				.willReturn(aResponse().withStatus(400).withHeader("Content-Type", "application/json")
-						.withBody("{ \"status\": \"Rejected\", \"decision\": \"P4\", \"validationResults\": [{\"topic\": \"Pitty.Payload\", \"errors\": [{\"errorCode\": \"E-400\", \"message\": \"E-400 validation failed\"}], \"warnings\": []}] }")));
-
-		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, false, 400);
-		assertThat(result.get("status").asText(), is("Rejected"));
-		assertThat(result.get("decision").asText(), is("P4"));
-	}
-
-	@Test
-	void postNottyReturnsUnprocessableContent() throws IOException {
-
-		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
-				.withQueryParam("force", WireMock.equalTo("true"))
-				.withHeader("Accept", WireMock.containing("application/json"))
-				.withHeader("Content-Type", WireMock.containing("application/json"))
-				.withHeader("x-force-status", WireMock.equalTo("422"))
-				.willReturn(aResponse().withStatus(422).withHeader("Content-Type", "application/json")
-						.withBody("{ \"status\": \"Rejected\", \"decision\": \"P3\", \"validationResults\": [{\"topic\": \"Pitty.BusinessRule\", \"errors\": [{\"errorCode\": \"E-422\", \"message\": \"E-422 validation failed\"}], \"warnings\": [{\"warningCode\": \"W-422\", \"message\": \"W-422 warning detected\"}]}] }")));
-
-		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, true, 422);
-		assertThat(result.get("status").asText(), is("Rejected"));
-		assertThat(result.get("decision").asText(), is("P3"));
-	}
-
-	@Test
-	void postNottyReturnsInternalServerError() throws IOException {
-
-		this.wiremock.stubFor(WireMock.post(WireMock.urlPathEqualTo("/pitty/notty"))
-				.withQueryParam("force", WireMock.equalTo("false"))
-				.withHeader("Accept", WireMock.containing("application/json"))
-				.withHeader("Content-Type", WireMock.containing("application/json"))
-				.withHeader("x-force-status", WireMock.equalTo("500"))
-				.willReturn(aResponse().withStatus(500).withHeader("Content-Type", "application/json")
-						.withBody("{ \"statusCode\": \"InternalServerError\", \"description\": \"Unexpected processing failure.\", \"exception\": \"RuntimeException\" }")));
-
-		final JsonNode result = this.productClient.postNotty(PITY_REQUEST, false, 500);
-		assertThat(result.get("statusCode").asText(), is("InternalServerError"));
-		assertThat(result.get("exception").asText(), is("RuntimeException"));
+		assertThat(result.get("id").asInt(), is(101));
+		assertThat(result.get("code").asText(), is("ALPHA"));
 	}
 }
