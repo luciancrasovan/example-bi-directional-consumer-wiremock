@@ -173,3 +173,5 @@ Reach out via a GitHub Issue, or reach us over in the [Pact foundation Slack](ht
 <!-- CI trigger: no functional changes -->
 
 <!-- CI trigger: rerun consumer pipeline -->
+
+<!-- CI trigger: v2 consumer redeploy -->
