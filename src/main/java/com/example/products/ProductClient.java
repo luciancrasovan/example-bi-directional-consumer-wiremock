@@ -19,6 +19,18 @@ public class ProductClient {
     this.url = url;
   }
 
+  public JsonNode getAllVkL() throws IOException {
+    return this.executeGet("/v1/AL/VkL");
+  }
+
+  public JsonNode deleteVkLByShortName(final String shortName) throws IOException {
+    return this.executeDelete("/v1/AL/VkL/" + shortName);
+  }
+
+  public JsonNode getAllKutty() throws IOException {
+    return this.executeGet("/v1/Kutty");
+  }
+
   public JsonNode getKuttyById(final int id) throws IOException {
     return this.executeGet("/v1/Kutty/Id/" + id);
   }
@@ -27,8 +39,27 @@ public class ProductClient {
     return this.executeGet("/v1/Kutty/ShortName/" + shortName);
   }
 
+  public JsonNode getHealth() throws IOException {
+    return this.executeGet("/health");
+  }
+
   private JsonNode executeGet(final String path) throws IOException {
     return Request.Get(this.url + path)
+        .addHeader("Accept", MEDIA_TYPE)
+        .execute().handleResponse(httpResponse -> {
+          try {
+            final ObjectMapper mapper = new ObjectMapper();
+            final JsonNode body = mapper.readTree(httpResponse.getEntity().getContent());
+
+            return body;
+          } catch (final JsonMappingException e) {
+            throw new IOException(e);
+          }
+        });
+  }
+
+  private JsonNode executeDelete(final String path) throws IOException {
+    return Request.Delete(this.url + path)
         .addHeader("Accept", MEDIA_TYPE)
         .execute().handleResponse(httpResponse -> {
           try {
