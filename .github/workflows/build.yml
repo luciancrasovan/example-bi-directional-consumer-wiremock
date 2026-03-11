@@ -7,6 +7,7 @@ on:
 env:
   PACT_BROKER_BASE_URL: https://xxxldigital.pactflow.io/
   PACT_BROKER_TOKEN: ${{ secrets.PACTFLOW_TOKEN }}
+  DEPLOY_ENVIRONMENT: ${{ github.ref == 'refs/heads/ready-prod' && 'production' || 'staging' }}
   PACT_PROVIDER: hippie-api-v2
   PACT_PROVIDER_DEPLOYED_BRANCH: hype-api-v2
   BASE_URL: http://localhost:5000
@@ -42,7 +43,7 @@ jobs:
       - name: Can I deploy?
         run: GIT_BRANCH=${GIT_REF:11} make can_i_deploy
 
-  # Runs on hype-v2-archie-client branch
+  # Runs on hype-v2-archie-client (staging) and ready-prod (production)
   deploy:
     runs-on: ubuntu-latest
     needs: can-i-deploy
@@ -51,4 +52,4 @@ jobs:
       - run: docker pull pactfoundation/pact-cli:latest
       - name: Deploy
         run: GIT_BRANCH=${GIT_REF:11} make deploy
-        if: github.ref == 'refs/heads/hype-v2-archie-client'
+        if: github.ref == 'refs/heads/hype-v2-archie-client' || github.ref == 'refs/heads/ready-prod'

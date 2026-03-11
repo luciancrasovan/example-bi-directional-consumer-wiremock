@@ -12,6 +12,8 @@ ifeq ($(GIT_BRANCH),master)
 	DEPLOY_TARGET=deploy
 else ifeq ($(GIT_BRANCH),hype-v2-archie-client)
 	DEPLOY_TARGET=deploy
+else ifeq ($(GIT_BRANCH),ready-prod)
+	DEPLOY_TARGET=deploy
 else
 	DEPLOY_TARGET=no_deploy
 endif
@@ -51,7 +53,7 @@ test: .env
 deploy: deploy_app record_deployment
 
 no_deploy:
-	@echo "Not deploying as not on master branch"
+	@echo "Not deploying as not on an approved deploy branch"
 
 can_i_deploy: .env
 	@echo "Checking deployment safety for provider ${PACT_PROVIDER} on branch ${PACT_PROVIDER_DEPLOYED_BRANCH}"
