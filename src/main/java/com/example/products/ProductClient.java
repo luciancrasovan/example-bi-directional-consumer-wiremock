@@ -1,6 +1,7 @@
 package com.example.products;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.http.client.fluent.Request;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
 
 @Service
 public class ProductClient {
@@ -49,7 +51,7 @@ public class ProductClient {
         .execute().handleResponse(httpResponse -> {
           try {
             final ObjectMapper mapper = new ObjectMapper();
-            final JsonNode body = mapper.readTree(httpResponse.getEntity().getContent());
+            final JsonNode body = this.parseBody(httpResponse.getEntity(), mapper);
 
             return body;
           } catch (final JsonMappingException e) {
@@ -64,12 +66,30 @@ public class ProductClient {
         .execute().handleResponse(httpResponse -> {
           try {
             final ObjectMapper mapper = new ObjectMapper();
-            final JsonNode body = mapper.readTree(httpResponse.getEntity().getContent());
+            final JsonNode body = this.parseBody(httpResponse.getEntity(), mapper);
 
             return body;
           } catch (final JsonMappingException e) {
             throw new IOException(e);
           }
         });
+  }
+
+  private JsonNode parseBody(final HttpEntity entity, final ObjectMapper mapper) throws IOException {
+    if (entity == null) {
+      return mapper.createObjectNode();
+    }
+
+    final byte[] payload = entity.getContent().readAllBytes();
+    if (payload.length == 0) {
+      return mapper.createObjectNode();
+    }
+
+    final String text = new String(payload, StandardCharsets.UTF_8).trim();
+    if (text.isEmpty()) {
+      return mapper.createObjectNode();
+    }
+
+    return mapper.readTree(text);
   }
 }
