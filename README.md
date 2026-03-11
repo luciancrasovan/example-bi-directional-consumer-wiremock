@@ -6,7 +6,7 @@
 
 <!-- Can I Deploy Badge -->
 
-[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/hippie-archie-client/branches/master/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/hippie-archie-client/branches/master/latest-version/can-i-deploy/to-environment/production/badge)
+[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/hippie-v2-archie-client/branches/master/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/hippie-v2-archie-client/branches/master/latest-version/can-i-deploy/to-environment/production/badge)
 
 - [Example Java Consumer - Wiremock (BYO Adapter)](#example-java-consumer---wiremock-byo-adapter)
   - [Overview of Example](#overview-of-example)
@@ -91,11 +91,11 @@ To be able to run some of the commands locally, you will need to export the foll
 
 Set `PACT_PROVIDER` to one of the following
 
-- `PACT_PROVIDER=hippie-api-v1`: Dredd provider pacticipant on the `hype-api-v1` branch - (https://github.com/luciancrasovan/example-bi-directional-provider-dredd/tree/hype-api-v1)
+- `PACT_PROVIDER=hippie-api-v2`: Dredd provider pacticipant on the `hype-api-v2` branch - (https://github.com/luciancrasovan/example-bi-directional-provider-dredd/tree/hype-api-v2)
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-postman`: Postman - (https://github.com/pactflow/example-bi-directional-provider-postman)
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-restassured`:  Rest Assured - (https://github.com/pactflow/example-bi-directional-provider-restassured)
 
-NOTE:- It defaults to `hippie-api-v1` for compatibility with the provider deployed from branch `hype-api-v1`.
+NOTE:- It defaults to `hippie-api-v2` for compatibility with the provider deployed from branch `hype-api-v2`.
   
 ## Usage
 

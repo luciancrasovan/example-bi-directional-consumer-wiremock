@@ -24,8 +24,8 @@ public class WireMockPactBaseTest implements WireMockConfigurationCustomizer {
   static WireMockPactExtension WIREMOCK_PACT_EXTENSION =
       new WireMockPactExtension(
           WireMockPactConfig.builder() //
-        .setConsumerDefaultValue("hippie-archie-client") //
-          .setProviderDefaultValue(System.getenv().getOrDefault("PACT_PROVIDER", "hippie-api-v1")) //
+        .setConsumerDefaultValue("hippie-v2-archie-client") //
+          .setProviderDefaultValue(System.getenv().getOrDefault("PACT_PROVIDER", "hippie-api-v2")) //
               .setPactJsonFolder("build/pacts"));
 
   @Override

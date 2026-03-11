@@ -27,18 +27,18 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 
 	private static final String PITY_REQUEST = """
 			{
-			  "c": {
+			  "cosmicPayload": {
 			    "sourceSystem": "archie-app",
-			    "a": [
+			    "auroraBatches": [
 			      {
-			        "m": "payload",
-			        "p": [
+			        "moodSignature": "payload",
+			        "prismProducts": [
 			          {
-			            "id": 101,
-			            "productNr": "P-101",
-			            "modelNr": "M-101",
-			            "pxid": "PX-101",
-			            "t": []
+			            "nebulaId": 101,
+			            "artifactCode": "P-101",
+			            "constellationCode": "M-101",
+			            "phoenixId": "PX-101",
+			            "traitBundles": []
 			          }
 			        ]
 			      }
