@@ -55,20 +55,4 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 		final List<Product> products = this.productClient.getKutty();
 		assertThat(products.get(0).getId(), is("K-101"));
 	}
-
-	@Test
-	void getWittyById() throws IOException {
-
-		this.wiremock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v3/BI/Witty/W-201"))
-				.withQueryParam("includeDescription", WireMock.equalTo("true"))
-				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
-				.withHeader("Authorization", WireMock.matching("Bearer .+"))
-				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
-						.withBody("{ \"id\": \"W-201\", \"description\": \"Synthetic Witty W-201\", \"items\": [{\"scope\": {\"ref\": \"SCOPE-1-1\"}, \"metric\": 1.5, \"refId\": \"REF-1-1\"}] }")));
-
-		final Witty witty = this.productClient.getWittyById("W-201", true);
-		assertThat(witty.getId(), is("W-201"));
-		assertThat(witty.getDescription(), is("Synthetic Witty W-201"));
-		assertThat(witty.getItems().get(0).getScope().getRef(), is("SCOPE-1-1"));
-	}
 }

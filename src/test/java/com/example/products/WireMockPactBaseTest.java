@@ -24,7 +24,7 @@ public class WireMockPactBaseTest implements WireMockConfigurationCustomizer {
   static WireMockPactExtension WIREMOCK_PACT_EXTENSION =
       new WireMockPactExtension(
           WireMockPactConfig.builder() //
-          .setConsumerDefaultValue("hype-stan-v3-client") //
+          .setConsumerDefaultValue("stan-v3-pyco-client") //
           .setProviderDefaultValue(System.getenv().getOrDefault("PACT_PROVIDER", "stan-api-v3")) //
               .setPactJsonFolder("build/pacts"));
 

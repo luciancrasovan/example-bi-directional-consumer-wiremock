@@ -52,36 +52,4 @@ public class ProductClient {
         }
       });
   }
-
-  public Witty getWittyById(final String id, final boolean includeDescription) throws IOException {
-    return Request.Get(this.url + "/v3/BI/Witty/" + id + "?includeDescription=" + includeDescription)
-      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
-      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
-      .execute().handleResponse(httpResponse -> {
-        try {
-          final ObjectMapper mapper = new ObjectMapper();
-          final Witty witty = mapper.readValue(httpResponse.getEntity().getContent(), Witty.class);
-
-          return witty;
-        } catch (final JsonMappingException e) {
-          throw new IOException(e);
-        }
-      });
-  }
-
-  public List<Witty> getWitty(final boolean includeDescription) throws IOException {
-    return Request.Get(this.url + "/v3/BI/Witty?includeDescription=" + includeDescription)
-      .addHeader("Accept", VERSIONED_MEDIA_TYPE)
-      .addHeader("Authorization", AUTHORIZATION_HEADER_VALUE)
-      .execute().handleResponse(httpResponse -> {
-        try {
-          final ObjectMapper mapper = new ObjectMapper();
-          final List<Witty> witty = mapper.readValue(httpResponse.getEntity().getContent(), new TypeReference<List<Witty>>(){});
-
-          return witty;
-        } catch (final JsonMappingException e) {
-          throw new IOException(e);
-        }
-      });
-  }
 }
