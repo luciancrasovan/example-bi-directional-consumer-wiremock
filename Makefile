@@ -48,7 +48,7 @@ test: .env
 ## Deploy tasks
 ## =====================
 
-deploy: deploy_app record_deployment
+deploy: deploy_app record_deployment record_release
 
 no_deploy:
 	@echo "Not deploying as not on an approved deploy branch"
@@ -67,6 +67,10 @@ deploy_app:
 
 record_deployment: .env
 	@"${PACT_CLI}" broker record-deployment --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment ${DEPLOY_ENVIRONMENT}
+
+record_release: .env
+	@echo "\n========== STAGE: record-release 📦 ==========\n"
+	@"${PACT_CLI}" broker record-release --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment ${DEPLOY_ENVIRONMENT}
 
 ## =====================
 ## PactFlow set up tasks

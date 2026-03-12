@@ -53,3 +53,6 @@ jobs:
       - name: Deploy
         run: GIT_BRANCH=${GIT_REF:11} make deploy
         if: github.ref == 'refs/heads/stan-v1-archie-client-prod'
+      - name: 📦 Record release
+        run: GIT_BRANCH=${GIT_REF:11} make record_release
+        if: github.ref == 'refs/heads/stan-v1-archie-client-prod'
