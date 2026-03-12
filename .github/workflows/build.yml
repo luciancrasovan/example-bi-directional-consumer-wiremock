@@ -7,9 +7,9 @@ on:
 env:
   PACT_BROKER_BASE_URL: https://xxxldigital.pactflow.io/
   PACT_BROKER_TOKEN: ${{ secrets.PACTFLOW_TOKEN }}
-  DEPLOY_ENVIRONMENT: production
-  PACT_PROVIDER: stan-api-v1
-  PACT_PROVIDER_DEPLOYED_BRANCH: stan-api-v1-prod
+  DEPLOY_ENVIRONMENT: staging
+  PACT_PROVIDER: stan-api-v2
+  PACT_PROVIDER_DEPLOYED_BRANCH: stan-v2
   BASE_URL: http://localhost:5000
   GIT_COMMIT: ${{ github.sha }}
   GIT_REF: ${{ github.ref }}
@@ -43,7 +43,7 @@ jobs:
       - name: Can I deploy?
         run: GIT_BRANCH=${GIT_REF:11} make can_i_deploy
 
-  # Runs only on stan-v1-archie-client-prod
+  # Runs only on stan-v2-archie-client
   deploy:
     runs-on: ubuntu-latest
     needs: can-i-deploy
@@ -52,4 +52,4 @@ jobs:
       - run: docker pull pactfoundation/pact-cli:latest
       - name: Deploy
         run: GIT_BRANCH=${GIT_REF:11} make deploy
-        if: github.ref == 'refs/heads/stan-v1-archie-client-prod'
+        if: github.ref == 'refs/heads/stan-v2-archie-client'
