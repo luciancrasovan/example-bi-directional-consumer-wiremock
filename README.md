@@ -96,6 +96,8 @@ Set `PACT_PROVIDER` to one of the following
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-restassured`:  Rest Assured - (https://github.com/pactflow/example-bi-directional-provider-restassured)
 
 NOTE:- It defaults to `stan-api-v3` for compatibility with the provider deployed from branch `stan-v3`.
+
+<!-- CI trigger: rerun hype-stan-v3-consumer pipeline -->
   
 ## Usage
 
