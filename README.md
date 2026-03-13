@@ -6,7 +6,7 @@
 
 <!-- Can I Deploy Badge -->
 
-[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/example-bi-directional-consumer-wiremock/branches/master/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/example-bi-directional-consumer-wiremock/branches/master/latest-version/can-i-deploy/to-environment/production/badge)
+[![Can I deploy Status](https://testdemo.pactflow.io/pacticipants/hype-stan-v3-client/branches/master/latest-version/can-i-deploy/to-environment/production/badge)](https://testdemo.pactflow.io/pacticipants/hype-stan-v3-client/branches/master/latest-version/can-i-deploy/to-environment/production/badge)
 
 - [Example Java Consumer - Wiremock (BYO Adapter)](#example-java-consumer---wiremock-byo-adapter)
   - [Overview of Example](#overview-of-example)
@@ -91,11 +91,13 @@ To be able to run some of the commands locally, you will need to export the foll
 
 Set `PACT_PROVIDER` to one of the following
 
-- `PACT_PROVIDER=example-bi-directional-provider-dredd`: Dredd - (https://github.com/luciancrasovan/example-bi-directional-provider-dredd)
+- `PACT_PROVIDER=stan-api-v3`: Dredd provider pacticipant on the `stan-v3` branch - (https://github.com/luciancrasovan/example-bi-directional-provider-dredd/tree/stan-v3)
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-postman`: Postman - (https://github.com/pactflow/example-bi-directional-provider-postman)
 - `PACT_PROVIDER=pactflow-example-bi-directional-provider-restassured`:  Rest Assured - (https://github.com/pactflow/example-bi-directional-provider-restassured)
 
-NOTE:- It defaults to `pactflow-example-bi-directional-provider-restassured` for compatibility with the [Java RestAssured](https://github.com/pactflow/example-bi-directional-provider-restassured) provider
+NOTE:- It defaults to `stan-api-v3` for compatibility with the provider deployed from branch `stan-v3`.
+
+<!-- CI trigger: rerun hype-stan-v3-consumer pipeline -->
   
 ## Usage
 
@@ -169,3 +171,5 @@ You can still try this example locally on Windows using powershell and running c
 ## Found an issue?
 
 Reach out via a GitHub Issue, or reach us over in the [Pact foundation Slack](https://slack.pact.io)
+.
+.

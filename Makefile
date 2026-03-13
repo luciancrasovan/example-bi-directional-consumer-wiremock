@@ -1,6 +1,9 @@
 # Default to the read only token - the read/write token will be present on Travis CI.
 # It's set as a secure environment variable in the .travis.yml file
-PACTICIPANT := "example-bi-directional-consumer-wiremock"
+PACTICIPANT := "hype-stan-v3-client"
+PACT_PROVIDER ?= "stan-api-v3"
+PACT_PROVIDER_DEPLOYED_BRANCH ?= "stan-v3"
+DEPLOY_ENVIRONMENT ?= production
 GITHUB_WEBHOOK_UUID := "654aff47-0269-4b9f-aaca-2f83ff3cd772"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
 
@@ -43,16 +46,17 @@ test: .env
 ## Deploy tasks
 ## =====================
 
-deploy: deploy_app record_deployment
+deploy: deploy_app record_deployment record_release
 
 no_deploy:
 	@echo "Not deploying as not on master branch"
 
 can_i_deploy: .env
+	@echo "Checking deployment safety for provider ${PACT_PROVIDER} on branch ${PACT_PROVIDER_DEPLOYED_BRANCH}"
 	@"${PACT_CLI}" broker can-i-deploy \
 	  --pacticipant ${PACTICIPANT} \
 	  --version ${GIT_COMMIT} \
-	  --to-environment production \
+	  --to-environment ${DEPLOY_ENVIRONMENT} \
 	  --retry-while-unknown 6 \
 	  --retry-interval 10
 
@@ -60,8 +64,10 @@ deploy_app:
 	@echo "Deploying to prod"
 
 record_deployment: .env
-	@"${PACT_CLI}" broker record-deployment --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment production
-
+	@"${PACT_CLI}" broker record-deployment --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment ${DEPLOY_ENVIRONMENT}
+record_release: .env
+        @echo "\n========== STAGE: record-release 📦 =========="
+        @"${PACT_CLI}" broker record-release --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment ${DEPLOY_ENVIRONMENT}
 ## =====================
 ## PactFlow set up tasks
 ## =====================
