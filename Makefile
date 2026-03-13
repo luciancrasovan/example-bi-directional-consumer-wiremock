@@ -4,7 +4,7 @@ PACTICIPANT := "hype-stan-v3-client"
 PACT_PROVIDER ?= "stan-api-v3"
 PACT_PROVIDER_DEPLOYED_BRANCH ?= "master"
 DEPLOY_ENVIRONMENT ?= production
-GITHUB_WEBHOOK_UUID := "654aff47-0269-4b9f-aaca-2f83ff3cd772"
+GITHUB_WEBHOOK_UUID := "7217571b-d326-4dae-b9e1-53a867f7b5a9"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
 
 # Only deploy from master
