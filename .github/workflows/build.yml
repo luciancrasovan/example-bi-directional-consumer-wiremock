@@ -8,10 +8,11 @@ env:
   PACT_BROKER_BASE_URL: https://xxxldigital.pactflow.io/
   PACT_BROKER_TOKEN: ${{ secrets.PACTFLOW_TOKEN }}
   PACT_PROVIDER: stan-api-v3
-  PACT_PROVIDER_BRANCH: stan-v3
+  PACT_PROVIDER_BRANCH: master
   BASE_URL: http://localhost:5000
   GIT_COMMIT: ${{ github.sha }}
   GIT_REF: ${{ github.ref }}
+  GIT_BRANCH: ${{ github.ref_name }}
 
 jobs:
   test:
@@ -28,7 +29,7 @@ jobs:
         env:
           PACT_PROVIDER: ${{ env.PACT_PROVIDER }}
       - name: Publish pacts
-        run: GIT_BRANCH=${GIT_REF:11} make publish_pacts
+        run: GIT_BRANCH=${GIT_BRANCH} make publish_pacts
         env:
           PACT_PROVIDER: ${{ env.PACT_PROVIDER }}
 
@@ -40,7 +41,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - run: docker pull pactfoundation/pact-cli:latest
       - name: Can I deploy?
-        run: GIT_BRANCH=${GIT_REF:11} make can_i_deploy
+        run: GIT_BRANCH=${GIT_BRANCH} make can_i_deploy
 
   # Runs on hype-stan-v3-consumer branch
   deploy:
@@ -50,5 +51,5 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - run: docker pull pactfoundation/pact-cli:latest
       - name: Deploy
-        run: GIT_BRANCH=${GIT_REF:11} make deploy
+        run: GIT_BRANCH=${GIT_BRANCH} make deploy
         if: github.ref == 'refs/heads/master'
