@@ -65,9 +65,10 @@ deploy_app:
 
 record_deployment: .env
 	@"${PACT_CLI}" broker record-deployment --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment ${DEPLOY_ENVIRONMENT}
+
 record_release: .env
-        @echo "\n========== STAGE: record-release 📦 =========="
-        @"${PACT_CLI}" broker record-release --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment ${DEPLOY_ENVIRONMENT}
+	@echo "\n========== STAGE: record-release 📦 =========="
+	@"${PACT_CLI}" broker record-release --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment ${DEPLOY_ENVIRONMENT}
 ## =====================
 ## PactFlow set up tasks
 ## =====================
