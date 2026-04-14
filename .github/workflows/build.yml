@@ -51,4 +51,4 @@ jobs:
       - run: docker pull pactfoundation/pact-cli:latest
       - name: Deploy
         run: GIT_BRANCH=${GIT_REF:11} make deploy
-        if: github.ref == 'refs/heads/stan-v3-pyco-client'
+        if: github.ref == 'refs/heads/stan-v3.1-pyco-client'

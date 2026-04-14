@@ -50,7 +50,7 @@ class ProductApiClientTest extends WireMockPactBaseTest {
 				.withHeader("Accept", WireMock.containing("application/json; x-api-version=3.0"))
 				.withHeader("Authorization", WireMock.matching("Bearer .+"))
 				.willReturn(aResponse().withHeader("Content-Type", "application/json; x-api-version=3.0")
-						.withBody("[{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name\": \"Synthetic Kutty K-101\" }]")));
+						.withBody("[{ \"id\": \"K-101\", \"code\": \"KCODE-K-101\", \"name2\": \"Synthetic2 Kutty K-101\",  }]")));
 
 		final List<Product> products = this.productClient.getKutty();
 		assertThat(products.get(0).getId(), is("K-101"));
