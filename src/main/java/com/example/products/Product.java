@@ -4,6 +4,7 @@ class Product {
 	private String id;
 	private String name;
 	private String code;
+	private String name2;
 
 	Product() {
 	}
@@ -12,6 +13,7 @@ class Product {
 		this.id = id;
 		this.code = code;
 		this.name = name;
+		this.name2 = name;
 	}
 
 	public String getId() {
@@ -20,6 +22,10 @@ class Product {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public String getName2() {
+		return this.name2;
 	}
 
 	public String getCode() {
